@@ -10,9 +10,13 @@ yarn.lock
 .idea
 
 venv
+.venv
 env
 site
 __pycache__/
+
+## Claude Code on the web: session-start hook artifacts
+.tools/
 
 ## Ignore pyenv configuration
 .python-version
