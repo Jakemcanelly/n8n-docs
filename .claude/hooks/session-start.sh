@@ -2,6 +2,10 @@
 # SessionStart hook for Claude Code on the web.
 # Installs the toolchain needed to build the docs and run the Vale linter.
 # Safe to run repeatedly (idempotent) and requires no user input.
+#
+# Runs asynchronously: the session starts immediately while dependencies
+# install in the background. Faster startup, but a build or lint issued in the
+# first few seconds may run before the toolchain is ready.
 set -euo pipefail
 
 # Only run in the remote (Claude Code on the web) environment. Local machines
@@ -9,6 +13,10 @@ set -euo pipefail
 if [ "${CLAUDE_CODE_REMOTE:-}" != "true" ]; then
   exit 0
 fi
+
+# Tell the harness to run this hook in the background. Must be the first line
+# of stdout. asyncTimeout is generous to cover a cold pip install + Vale fetch.
+echo '{"async": true, "asyncTimeout": 600000}'
 
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 cd "$PROJECT_DIR"
